@@ -49,26 +49,6 @@ public class AppConfiguration extends Configuration {
 }
 ```
 
-In your `Application` class, add a `MongeezBundle`:
-
-```java
-public class App extends Application<AppConfiguration> {
-
-    @Override
-    public void initialize(Bootstrap<AppConfiguration> bootstrap) {
-        bootstrap.addBundle(new MongeezBundle<AppConfiguration>() {
-
-            @Override
-            public MongoClientFactory getMongoClientFactory(AppConfiguration config) {
-                return config.getMongo();
-            }
-
-        });
-    }
-    
-}
-```
-
 Add the necessary bits to your configuration file:
 
 ```yaml
@@ -108,6 +88,29 @@ Add a `mongeez.xml` file to `src/main/resources`:
 </changeFiles>
 ```
 
+
+## Commands
+
+In your `Application` class, add a `MongeezBundle`:
+
+```java
+public class App extends Application<AppConfiguration> {
+
+    @Override
+    public void initialize(Bootstrap<AppConfiguration> bootstrap) {
+        bootstrap.addBundle(new MongeezBundle<AppConfiguration>() {
+
+            @Override
+            public MongoClientFactory getMongoClientFactory(AppConfiguration config) {
+                return config.getMongo();
+            }
+
+        });
+    }
+    
+}
+```
+
 Now you can apply pending migrations with the `mongo migrate` command:
 
 ```
@@ -115,6 +118,45 @@ $ java -jar app.jar mongo migrate config.yml
 INFO  [2014-09-25 01:11:21,805] org.mongeez.reader.FilesetXMLReader: Num of changefiles 1
 INFO  [2014-09-25 01:11:22,000] org.mongeez.ChangeSetExecutor: ChangeSet ChangeSet-1 has been executed
 INFO  [2014-09-25 01:11:22,004] org.mongeez.ChangeSetExecutor: ChangeSet ChangeSet-2 has been executed
+```
+
+
+## Tasks
+
+In your `Application` class, add a `MongoMigrateTask`:
+
+```java
+public class App extends Application<AppConfiguration> {
+
+    @Override
+    public void run(AppConfiguration configuration, Environment environment) throws Exception {
+        MongoConfiguration<AppConfiguration> mongoConfig = new MongoConfiguration<AppConfiguration>() {
+
+            @Override
+            public MongoClientFactory getMongoClientFactory(AppConfiguration configuration) {
+                return configuration.getMongo();
+            }
+
+        };
+        Task migrateTask = new MongoMigrateTask<>("mongoMigrate", mongoConfig, configuration);
+        environment.admin().addTask(migrateTask);
+    }
+
+}
+```
+
+Now you can apply pending migrations by executing the `mongoMigrate` task with an HTTP POST:
+
+```
+$ curl -X POST http://localhost:8081/tasks/mongoMigrate
+```
+
+Mongeez will output changeset execution information in your application's log file:
+
+```
+INFO  [2014-09-25 13:55:32,589] org.mongeez.reader.FilesetXMLReader: Num of changefiles 1
+INFO  [2014-09-25 13:55:32,721] org.mongeez.ChangeSetExecutor: ChangeSet ChangeSet-1 has been executed
+INFO  [2014-09-25 13:55:32,740] org.mongeez.ChangeSetExecutor: ChangeSet ChangeSet-2 has been executed
 ```
 
 
