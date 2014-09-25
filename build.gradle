@@ -15,7 +15,6 @@ apply plugin: "maven-publish"
 
 repositories {
     jcenter()
-    maven { url "http://dl.bintray.com/commercehub-oss/main" } // TODO Remove
 }
 
 dependencies {
