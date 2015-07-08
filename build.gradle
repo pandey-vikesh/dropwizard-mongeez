@@ -1,10 +1,14 @@
 buildscript {
     repositories {
         jcenter()
+        maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+        
     }
     dependencies {
         classpath "com.github.townsfolk:gradle-release:1.2"
-        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:0.5"
+        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2"
     }
 }
 
@@ -12,14 +16,15 @@ apply plugin: "java"
 apply plugin: "groovy"
 apply plugin: "maven"
 apply plugin: "maven-publish"
+apply plugin: "com.jfrog.bintray"
 
 repositories {
     jcenter()
 }
 
 dependencies {
-    compile "io.dropwizard:dropwizard-core:0.7.1"
-    compile "io.dropwizard:dropwizard-db:0.7.1"
+    compile "io.dropwizard:dropwizard-core:0.8.1"
+    compile "io.dropwizard:dropwizard-db:0.8.1"
     compile "com.commercehub.dropwizard:dropwizard-mongo:2.0.0"
     compile "org.mongeez:mongeez:0.9.4"
     testCompile "org.spockframework:spock-core:0.7-groovy-2.0"
