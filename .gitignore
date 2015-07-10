@@ -9,3 +9,4 @@ logs/
 out/
 .DS_Store
 .gradletasknamecache
+/bin/
