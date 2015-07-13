@@ -5,7 +5,7 @@
     <groupId>com.commercehub.dropwizard</groupId>
     <artifactId>dropwizard-mongeez</artifactId>
     <version>1.0.1</version>
-    <packaging>jar</packaging>
+    <packaging>jar</packaging> 
 
     <repositories>
     <repository>
